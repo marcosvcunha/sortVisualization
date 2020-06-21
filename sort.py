@@ -1,6 +1,9 @@
 import time
+from datetime import datetime
+from createList import randomList
 
 def mergeSort(myList, delay=[0]):
+    ## Esta versão do Merge Sort não tem bom desempenho mas serve para demonstração
     l = 0
     r = len(myList) - 1
     doMergeSort(myList, l, r, delay=delay)
@@ -55,38 +58,88 @@ def bubbleSort(myList, delay=[0]):
                 if(delay[0] != 0):
                     time.sleep(delay[0]*4)
 
-def merge_sort(myList):
-    sortedList = do_merge_sort(myList.copy())
-    for i in range(len(myList)):
-        myList[i] = sortedList[i]
+def quickSort(myList, delay=[0]):
+    doQuickSort(myList, 0, len(myList), delay=delay)
 
-def do_merge_sort(unsorted_list):
-    listSize = len(unsorted_list)
-    if(listSize > 1):
-        middle = int(listSize/2)
-        leftHalf = do_merge_sort(unsorted_list[:middle])
-        rightHalf = do_merge_sort(unsorted_list[middle:])
-        return merge2(leftHalf, rightHalf)
-    else:
-        return unsorted_list
-# Merge the sorted halves
+def doQuickSort(myList, l, r, delay=[0]):
+    tempL = l
+    tempR = r - 2
+    listSize = r - l
+    # chose a pivot
+    ## Ordena o primeiro, o ultimo e o elemento do meio e usa o meio como pivot
+    if(listSize > 2):
+        m = l + int(listSize/2)
+        if(myList[l] > myList[m]):
+            aux = myList[m]
+            myList[m] = myList[l]
+            myList[l] = aux
+            time.sleep(delay[0]*4)
+        if(myList[m] > myList[r-1]):
+            aux = myList[r-1]
+            myList[r-1] = myList[m]
+            myList[m] = aux
+            time.sleep(delay[0]*4)
+        if(myList[l] > myList[m]):
+            aux = myList[m]
+            myList[m] = myList[l]
+            myList[l] = aux
+            time.sleep(delay[0]*4)
+        if(listSize > 3):
+            pivot = myList[m]
+            # Move o pivot pra direita
+            aux = myList[r-1]
+            myList[r-1] = myList[m]
+            myList[m] = aux
+            # doSort 
+            while(tempL < tempR):
+                while(myList[tempL] < pivot and tempL < len(myList)):
+                    tempL += 1
+                while(myList[tempR] >= pivot and tempR >= 0):
+                    tempR -= 1
+                if(tempL < tempR):
+                    aux = myList[tempR]
+                    myList[tempR] = myList[tempL]
+                    myList[tempL] = aux
+                    time.sleep(delay[0]*16)
+            aux = myList[tempL]
+            myList[tempL] = myList[r - 1]
+            myList[r - 1] = aux
+            time.sleep(delay[0]*4)
+            doQuickSort(myList, l, tempL, delay=delay)
+            doQuickSort(myList, tempL + 1, r, delay=delay)
+    elif(listSize == 2):
+        if(myList[l] > myList[r - 1]):
+            aux = myList[r - 1]
+            myList[r - 1] = myList[l]
+            myList[l] = aux
+            time.sleep(delay[0]*4)
 
-def merge2(left_half,right_half):
-    sortedList = []
-    i = 0
-    j = 0
-    while (i < len(left_half) and j < len(right_half)):
-        if(left_half[i] < right_half[j]):
-            sortedList.append(left_half[i])
-            i += 1
-        else:
-            sortedList.append(right_half[j])
-            j += 1
-    
-    if(i < len(left_half)):
-        sortedList += left_half[i:]
-    else:
-        sortedList += right_half[j:]
-    return sortedList
-        
+def testAlg(alg):
+    exTime = 0
+    listSize = 100
+    while(exTime < 60):
+        myList = randomList(listSize, listSize*2)
+        copyList = myList.copy()
+        copyList.sort()
+        startTime = datetime.now().timestamp()
+        alg(myList)
+        endTime = datetime.now().timestamp()
+        exTime = endTime - startTime
+        listSize *= 2
 
+        print('N:  ', listSize, '   Time:  ', exTime, '  A Lista está ordenada? ', copyList == myList)
+
+def testeSort():
+    exTime = 0
+    listSize = 100
+    while(exTime < 30):
+        myList = randomList(listSize, listSize*2)
+        startTime = datetime.now().timestamp()
+        myList.copy()
+        endTime = datetime.now().timestamp()
+        exTime = endTime - startTime
+        listSize *= 2
+        print('N:  ', listSize, '   Time:  ', exTime,)
+
+if __name__ == "__main__":
+    testeSort()

@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../')
-from sort import bubbleSort, mergeSort
+from sort import bubbleSort, mergeSort, quickSort
 from createList import randomList
 from canvas import Canvas
 from menu import Menu
@@ -96,6 +96,8 @@ class Screen():
             bubbleSort(myList, delay=self.sleepTime)
         elif(self.sortingAlg == 'Merge Sort'):
             mergeSort(myList, delay=self.sleepTime)
+        elif(self.sortingAlg == 'Quick Sort'):
+            quickSort(myList, delay=self.sleepTime)
         self.buttons[1].setText('Start')
         self.sorting = False
 
@@ -115,6 +117,8 @@ class Screen():
         if(self.sortingAlg == 'Bubble Sort'):
             self.sortingAlg = 'Merge Sort'
         elif(self.sortingAlg == 'Merge Sort'):
+            self.sortingAlg = 'Quick Sort'
+        elif(self.sortingAlg == 'Quick Sort'):
             self.sortingAlg = 'Bubble Sort'
         self.buttons[7].setText(self.sortingAlg)
     
